@@ -32,6 +32,18 @@ $> curl localhost:8080/fibonacci/a
    {"errorCode":1000,"message":"Received inputParameter is not a correct limit value","inputParameters":"a"}
 ```
 
+### Testing
+To execute all tests, run:
+```sh
+$> go test ./...
+```
+
+To execute benchmarks as well, run:
+```sh
+$> go test -check.b -check.v ./...
+```
+
+
 ## Technology
 The service is written in golang, with [gin](https://github.com/gin-gonic/gin) serving as the web framework and
 [go-check]("https://github.com/go-check/check") in tests.
