@@ -43,3 +43,34 @@ func (s *TestSuite) TestToString(c *C) {
 
 	c.Check(str, Equals, "1, 1, 2, 3, 5")
 }
+
+var result []int
+func benchmarkFib(n int, c *C, fibService FibService) {
+	var r []int
+	for i := 0; i < c.N; i++ {
+		// always record the result of Fib to prevent
+		// the compiler eliminating the function call.
+		elems, _ := fibService.CountNValues(n)
+		r = elems
+	}
+	// always store the result to a package level variable
+	// so the compiler cannot eliminate the Benchmark itself.
+	result = r
+}
+
+func (s *TestSuite) BenchmarkFib1(c *C) {
+	benchmarkFib(1, c, s.fibService)
+}
+
+func (s *TestSuite) BenchmarkFib10(c *C) {
+	benchmarkFib(10, c, s.fibService)
+}
+
+func (s *TestSuite) BenchmarkFib100(c *C) {
+	benchmarkFib(100, c, s.fibService)
+}
+
+
+func (s *TestSuite) BenchmarkFib1000(c *C) {
+	benchmarkFib(1000, c, s.fibService)
+}
