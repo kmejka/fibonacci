@@ -22,7 +22,14 @@ $> curl localhost:8080/
 To get the first 'n' values of the fibonacci sequence call '/fibonacci/:n':
 ```sh
 $> curl localhost:8080/fibonacci/10
-   1, 1, 2, 3, 5, 8, 13, 21, 34, 55
+   {"n":10,"elems":"1, 1, 2, 3, 5, 8, 13, 21, 34, 55"}
+```
+
+If the passed parameters are wrong, or something unexpected happened during sequence calculation, a custom error will
+be returned:
+```sh
+$> curl localhost:8080/fibonacci/a
+   {"errorCode":1000,"message":"Received inputParameter is not a correct limit value","inputParameters":"a"}
 ```
 
 ## Technology

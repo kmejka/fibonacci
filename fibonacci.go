@@ -26,16 +26,36 @@ func fibonacci(c *gin.Context) {
 
 	nParam := c.Param("n")
 	n, err := strconv.Atoi(nParam)
-	if err != nil {
-		//todo create error type
-		c.JSON(http.StatusBadRequest, "'"+nParam+"' is not a correct limit value")
+
+	if err != nil || n == 0 {
+		c.JSON(http.StatusBadRequest, errorResponse{
+			ErrorCode: 1000,
+			Message: "Received inputParameter is not a correct limit value",
+			InputParameters: nParam,
+		})
+		return
 	}
 
 	fibelems, err := fibSrv.CountNValues(n)
 	if err != nil {
-		//todo use error type
-		c.Error(err)
+		c.JSON(http.StatusInternalServerError, errorResponse{
+			ErrorCode: 1000,
+			Message: "Unexpected error occurred during fibonacci calculation",
+			InputParameters: nParam,
+		})
+		return
 	}
 
-	c.String(http.StatusOK, fibelems.ToString())
+	c.JSON(http.StatusOK, response{N: n, Elems: fibelems.ToString()})
+}
+
+type response struct {
+	N int `json:"n"`
+	Elems string `json:"elems"`
+}
+
+type errorResponse struct {
+	ErrorCode int `json:"errorCode"`
+	Message string `json:"message"`
+	InputParameters string `json:"inputParameters"`
 }
