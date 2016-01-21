@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"strconv"
+//	"fmt"
 )
 
 type FibService interface {
@@ -13,11 +14,17 @@ type FibServiceImpl struct{}
 
 type FibElems []int
 
-func fibCounter(c chan int) {
+func fibCounter(c chan int, n int) {
 	x, y := 1, 1
+	counter := 0
 	for {
-		c <- x
-		x, y = y, x+y
+		if counter == n {
+			return
+		} else {
+			c <- x
+			x, y = y, x + y
+		}
+		counter ++
 	}
 }
 
@@ -28,9 +35,7 @@ func (srv *FibServiceImpl) CountNValues(n int) (FibElems, error) {
 	ret := make([]int, n)
 	//channel contains max 10 elements at once
 	c := make(chan int, 10)
-	//todo close the fibCounter thread
-	//quit := make(chan int)
-	go fibCounter(c)
+	go fibCounter(c, n)
 	for i := 0; i < n; i++ {
 		elem := <-c
 		ret[i] = elem
